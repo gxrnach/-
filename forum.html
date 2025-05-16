@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Форум</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #111;
+      color: #eee;
+      padding: 1rem;
+    }
+    .light {
+      background-color: #fff;
+      color: #000;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.25rem 0;
+    }
+    .topic {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border: 1px solid #555;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <h1>Форум</h1>
+  <button onclick="toggleTheme()">🌗 Переключить тему</button>
+  <br><br>
+
+  <div>
+    <input id="topicInput" placeholder="Введите тему">
+    <button onclick="addTopic()">Создать тему</button>
+  </div>
+
+  <div id="topics"></div>
+
+  <script>
+    let darkMode = true;
+    const topics = JSON.parse(localStorage.getItem("topics") || "[]");
+    const topicsDiv = document.getElementById("topics");
+
+    function renderTopics() {
+      topicsDiv.innerHTML = "";
+      topics.forEach((t, i) => {
+        const div = document.createElement("div");
+        div.className = "topic";
+        div.innerHTML = `
+          <span>${t}</span>
+          <button onclick="deleteTopic(${i})">Удалить</button>
+        `;
+        topicsDiv.appendChild(div);
+      });
+    }
+
+    function addTopic() {
+      const input = document.getElementById("topicInput");
+      if (input.value.trim()) {
+        topics.unshift(input.value.trim());
+        localStorage.setItem("topics", JSON.stringify(topics));
+        input.value = "";
+        renderTopics();
+      }
+    }
+
+    function deleteTopic(index) {
+      topics.splice(index, 1);
+      localStorage.setItem("topics", JSON.stringify(topics));
+      renderTopics();
+    }
+
+    function toggleTheme() {
+      darkMode = !darkMode;
+      document.body.className = darkMode ? "" : "light";
+    }
+
+    renderTopics();
+  </script>
+</body>
+</html>
+
